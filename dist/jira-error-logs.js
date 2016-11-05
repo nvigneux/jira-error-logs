@@ -4,17 +4,24 @@
   // and are loaded in the correct order to satisfy dependency injection
   // before all nested files are concatenated by Gulp
 
-  // Config
-  angular.module('jiraErrorLogs.config', [])
-      .config(['$httpProvider', function($httpProvider) {
-        $httpProvider.interceptors.push('jiraLogHttpInterceptor');
-      }]);
-
   // Modules
-  angular.module('jiraErrorLogs',
-      [
-          'jiraErrorLogs.config'
-      ]);
+  angular.module('jiraErrorLogs', []);
+
+})(angular);
+
+(function (angular) {
+  'use strict';
+
+  /**
+   * @desc Config Jira logs Http provider
+   */
+  angular
+    .module('jiraErrorLogs')
+    .config(jiraErrorLogsConfig);
+
+  function jiraErrorLogsConfig($httpProvider) {
+    $httpProvider.interceptors.push('jiraLogHttpInterceptor');
+  }
 
 })(angular);
 
@@ -175,8 +182,7 @@
 
       'request': function(config) {
         console.log('config', config);
-        //var injector = angular.element('[ng-app]').injector();
-        //var UserService = injector.get('User');
+
         //if (config && config.url &&
         //  (
         //    config.url.indexOf(ApiConfig.API_EDITOR) === 0 ||
@@ -184,15 +190,14 @@
         //  )
         //  && config.url.indexOf(ApiConfig.API_SP + '/info') !== 0
         //) {
-        //  UserService.getUser().addTechHistory('appel API : ' + config.method + ' ' + config.url);
+        //  logData.addTechHistoryLog('appel API : ' + config.method + ' ' + config.url);
         //}
 
         return config;
       },
       'requestError': function(rejection) {
         console.log('rejection', rejection);
-        //var injector = angular.element('[ng-app]').injector();
-        //var UserService = injector.get('User');
+
         //
         //if (rejection && rejection.url &&
         //  (
@@ -206,7 +211,7 @@
         //    msg += ', message "' + rejection.data.message + '"';
         //  }
         //  msg += '{color}';
-        //  UserService.getUser().addTechHistory(msg);
+        //  logData.addTechHistoryLog(msg);
         //}
 
         return $q.reject(rejection);
@@ -216,8 +221,7 @@
         console.log('response', response);
         // Add API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
-        //var injector = angular.element('[ng-app]').injector();
-        //var UserService = injector.get('User');
+
         //
         //if (response.config && response.config.url &&
         //  (
@@ -226,7 +230,7 @@
         //  )
         //  && response.config.url.indexOf(ApiConfig.API_SP + '/info') !== 0
         //) {
-        //  UserService.getUser().addTechHistory('réponse API : ' + response.config.method + ' ' + response.config.url + ', code ' + response.status);
+        //  logData.addTechHistoryLog('réponse API : ' + response.config.method + ' ' + response.config.url + ', code ' + response.status);
         //}
 
         return response;
@@ -236,8 +240,7 @@
         console.log('rejection', rejection);
         // Add failed API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
-        //var injector = angular.element('[ng-app]').injector();
-        //var UserService = injector.get('User');
+
         //
         //if (rejection.config && rejection.config.url &&
         //  (
@@ -251,7 +254,7 @@
         //    msg += ', message "' + rejection.data.message + '"';
         //  }
         //  msg += '{color}';
-        //  UserService.getUser().addTechHistory(msg);
+        //  logData.addTechHistoryLog(msg);
         //}
 
         return $q.reject(rejection);
