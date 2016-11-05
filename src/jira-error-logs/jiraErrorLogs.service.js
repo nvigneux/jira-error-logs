@@ -10,27 +10,61 @@
 
   function logData(){
 
-    var historizedUserData = [];
+    var historizedUserData = [], // user actions
+        historizedTechData = []; // technical actions (API calls and responses)
 
     var service = {
-      addHistoryLog: addHistoryLog,
-      getHistoryLog: getHistoryLog
+      addUserHistoryLog: addUserHistoryLog,
+      getUserHistoryLog: getUserHistoryLog,
+      addTechHistoryLog: addTechHistoryLog,
+      getTechHistoryLog: getTechHistoryLog
     };
 
     return service;
 
     /////////////////////////
 
-    function addHistoryLog(data){
+    /**
+     * Register a user action.
+     * @param data user action.
+     */
+    function addUserHistoryLog(data){
       historizedUserData.push({date: new Date(), msg: data});
-      if (historizedUserData.length > 10) {
+      if (historizedUserData.length > 5) {
         historizedUserData.shift();
       }
     }
 
-    function getHistoryLog(){
+    /**
+     * get user action.
+     */
+    function getUserHistoryLog(){
       return historizedUserData;
     }
+
+    /////////////////////////
+
+    /**
+     * Register a technical action (API call and responses).
+     * @param data technical action.
+     */
+    function addTechHistoryLog(data){
+      var dateNow = new Date();
+      var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
+      historizedTechData.push({date: now, msg: data});
+      if (historizedTechData.length > 10) {
+        historizedTechData.shift();
+      }
+    }
+
+    /**
+     * get tech action.
+     */
+    function getUserHistoryLog(){
+      return historizedTechData;
+    }
+
+    /////////////////////////
 
   }
 
