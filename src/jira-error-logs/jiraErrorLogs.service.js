@@ -60,7 +60,7 @@
     /**
      * get tech action.
      */
-    function getUserHistoryLog(){
+    function getTechHistoryLog(){
       return historizedTechData;
     }
 
