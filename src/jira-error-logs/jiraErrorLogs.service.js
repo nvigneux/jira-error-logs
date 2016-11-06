@@ -5,7 +5,7 @@
    * @desc services used to set/get log data in array
    */
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.service')
     .factory('logData', logData);
 
   function logData(){

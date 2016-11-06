@@ -5,7 +5,7 @@
    * @desc Config Jira logs Http provider
    */
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.config')
     .config(jiraErrorLogsConfig);
 
   function jiraErrorLogsConfig($httpProvider) {

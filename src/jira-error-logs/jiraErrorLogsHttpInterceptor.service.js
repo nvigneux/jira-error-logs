@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.http')
     .factory('jiraLogHttpInterceptor', jiraLogHttpInterceptor);
 
   jiraLogHttpInterceptor.$inject = ['$q'];

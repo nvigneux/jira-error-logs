@@ -2,10 +2,21 @@
   'use strict';
   // Create all modules and define dependencies to make sure they exist
   // and are loaded in the correct order to satisfy dependency injection
-  // before all nested files are concatenated by Gulp
+  // before all nested files are concatenated by Gulp;
+  angular.module('jiraErrorLogs.provider', []);
+  angular.module('jiraErrorLogs.http', []);
+  angular.module('jiraErrorLogs.config', []);
+  angular.module('jiraErrorLogs.service', []);
+  angular.module('jiraErrorLogs.directive', []);
 
   // Modules
-  angular.module('jiraErrorLogs', []);
+  angular.module('jiraErrorLogs', [
+    'jiraErrorLogs.provider',
+    'jiraErrorLogs.http',
+    'jiraErrorLogs.service',
+    'jiraErrorLogs.config',
+    'jiraErrorLogs.directive'
+  ]);
 
 })(angular);
 
@@ -16,7 +27,7 @@
    * @desc Config Jira logs Http provider
    */
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.config')
     .config(jiraErrorLogsConfig);
 
   function jiraErrorLogsConfig($httpProvider) {
@@ -33,14 +44,16 @@
    * @example <div user-context></div>
    */
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.directive')
     .directive('userContext', userContext);
 
   function userContext(){
     var directive = {
       restrict: 'EA',
       template: '<pre style="display: none;" id="contexteDifyz">{{vm.refreshContextView()}}</pre>',
-      scope: {},
+      scope: {
+        userInfo : '@'
+      },
       controller: refreshContextViewController,
       controllerAs: 'vm',
       bindToController: true
@@ -49,44 +62,41 @@
     return directive;
   }
 
-  refreshContextViewController.$inject = ['logData'];
+  refreshContextViewController.$inject = ['logData', 'jiraErrorLogsSettings'];
 
-  function refreshContextViewController(logData){
+  function refreshContextViewController(logData, jiraErrorLogsSettings){
     var vm = this;
     vm.refreshContextView = refreshContextView;
 
     /**
-     * Retrieve context, historized user actions and API calls, then format this data for use by JiraCapture.
+     * Retrivaluee context, historized user actions and API calls, then format this data for use by JiraCapture.
      * @returns {String} formatted data for use by JiraCapture.
      */
     function refreshContextView(){
 
       //var u = User.getUser();
-      var histoUserData = logData.getHistorizedUserData;
-      var histoTechData = logData.getHistorizedTechData;
-      //var rapport = 'Version API SP: ' + $scope.apiVersion + '\n\n';
-      var rapport = 'Version API SP:\n\n';
+      var histoUserData = logData.getUserHistoryLog();
+      var histoTechData = logData.getTechHistoryLog();
+      var rapport = 'Version API SP: ' + jiraErrorLogsSettings.appVersion + '\n\n';
 
-      //if (u && u.login) {
-      //  rapport += 'Utilisateur actuellement identifié :\n\n';
-      //  rapport += '* login: ' + u.login + '\n';
-      //} else {
-      //  rapport += 'Utilisateur actuellement non identifié.\n'
-      //}
+      if (vm.userInfo && vm.userInfo.login) {
+        rapport += 'Utilisateur actuellement identifié :\n\n';
+        rapport += '* login: ' + vm.userInfo.login + '\n';
+      } else {
+        rapport += 'Utilisateur actuellement non identifié.\n'
+      }
 
-      //if (histoUserData && histoUserData.length > 0) {
-      if (histoUserData) {
+      if (histoUserData && histoUserData.length > 0) {
         rapport += '\nDerniers événements fonctionnels:\n\n';
-        histoUserData.forEach(function(ev) {
-          rapport += '* ' + ev.date + ' - ' + ev.msg + '\n';
+        histoUserData.forEach(function(value) {
+          rapport += '* ' + value.date + ' - ' + value.msg + '\n';
         });
       }
 
-      //if (histoTechData && histoTechData.length > 0) {
-      if (histoTechData) {
+      if (histoTechData && histoTechData.length > 0) {
         rapport += '\nDerniers événements techniques:\n\n';
-        histoTechData.forEach(function(ev) {
-          rapport += '* ' + ev.date + ' - ' + ev.msg + '\n';
+        histoTechData.forEach(function(value) {
+          rapport += '* ' + value.date + ' - ' + value.msg + '\n';
         });
       }
       return rapport;
@@ -98,11 +108,39 @@
 (function (angular) {
   'use strict';
 
+  angular
+    .module('jiraErrorLogs.provider')
+    .provider('jiraErrorLogsSettings', jiraErrorLogsSettingsProvider);
+
+  function jiraErrorLogsSettingsProvider() {
+    var appVersion = "";
+    var apiName = [];
+
+    this.setAppVersion = function (value) {
+      appVersion = value;
+    };
+
+    this.setApiName = function (value) {
+      apiName = value;
+    };
+
+    this.$get = function () {
+      return {
+        appVersion: appVersion,
+        apiName: apiName
+      };
+    };
+  }
+});
+
+(function (angular) {
+  'use strict';
+
   /**
    * @desc services used to set/get log data in array
    */
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.service')
     .factory('logData', logData);
 
   function logData(){
@@ -171,7 +209,7 @@
   'use strict';
 
   angular
-    .module('jiraErrorLogs')
+    .module('jiraErrorLogs.http')
     .factory('jiraLogHttpInterceptor', jiraLogHttpInterceptor);
 
   jiraLogHttpInterceptor.$inject = ['$q'];
