@@ -28,8 +28,14 @@
 
   function refreshContextViewController(logData, jiraErrorLogsSettings){
     var vm = this;
+    var appVersion;
     vm.refreshContextView = refreshContextView;
 
+    jiraErrorLogsSettings.appVersion().then(
+        function (response) {
+          appVersion = response;
+        }
+    );
     /**
      * Retrivaluee context, historized user actions and API calls, then format this data for use by JiraCapture.
      * @returns {String} formatted data for use by JiraCapture.
@@ -39,7 +45,7 @@
       //var u = User.getUser();
       var histoUserData = logData.getUserHistoryLog();
       var histoTechData = logData.getTechHistoryLog();
-      var rapport = 'Version API SP: ' + jiraErrorLogsSettings.appVersion + '\n\n';
+      var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
       if (vm.userInfo && vm.userInfo.login) {
         rapport += 'Utilisateur actuellement identifié :\n\n';
