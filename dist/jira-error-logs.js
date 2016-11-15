@@ -52,7 +52,7 @@
       restrict: 'EA',
       template: '<pre style="display: none;" id="contexteDifyz">{{vm.refreshContextView()}}</pre>',
       scope: {
-        userInfo : '@'
+        userInfo : '='
       },
       controller: refreshContextViewController,
       controllerAs: 'vm',
@@ -80,12 +80,11 @@
      */
     function refreshContextView(){
 
-      //var u = User.getUser();
       var histoUserData = logData.getUserHistoryLog();
       var histoTechData = logData.getTechHistoryLog();
       var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
-      if (vm.userInfo && vm.userInfo.login) {
+      if (vm.userInfo && vm.userInfo.isLogged) {
         rapport += 'Utilisateur actuellement identifié :\n\n';
         rapport += '* login: ' + vm.userInfo.login + '\n';
       } else {
@@ -105,6 +104,7 @@
           rapport += '* ' + value.date + ' - ' + value.msg + '\n';
         });
       }
+
       return rapport;
     }
   }
@@ -252,8 +252,8 @@
         });
         return config;
       },
-      'requestError': function(rejection) {
 
+      'requestError': function(rejection) {
         $injector.invoke(function(jiraErrorLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraErrorLogsSettings.apiName.length; i++) {
@@ -282,8 +282,8 @@
         $injector.invoke(function(jiraErrorLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraErrorLogsSettings.apiName.length; i++) {
-            if (response && response.url && response.url.indexOf(jiraErrorLogsSettings.apiName[i]) === 0 && response.url.indexOf('/info') <= 0) {
-              result.push(response.url);
+            if (response.config && response.config.url && response.config.url.indexOf(jiraErrorLogsSettings.apiName[i]) === 0 && response.config.url.indexOf('/info') <= 0) {
+              result.push(response.config.url);
             }
           }
 
@@ -302,13 +302,13 @@
         $injector.invoke(function(jiraErrorLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraErrorLogsSettings.apiName.length; i++) {
-            if (rejection && rejection.url && rejection.url.indexOf(jiraErrorLogsSettings.apiName[i]) === 0 && rejection.url.indexOf('/info') <= 0) {
-              result.push(rejection.url);
+            if (rejection.config && rejection.config.url && rejection.config.url.indexOf(jiraErrorLogsSettings.apiName[i]) === 0 && rejection.config.url.indexOf('/info') <= 0) {
+              result.push(rejection.config.url);
             }
           }
 
           if(result.length){
-            var msg = '{color:red}réponse API : ' + rejection.rejection.method + ' ' + rejection.rejection.url + ', code ' + rejection.status;
+            var msg = '{color:red}réponse API : ' + rejection.config.method + ' ' + rejection.config.url + ', code ' + rejection.status;
             if (rejection.data && rejection.data.message) {
               msg += ', message "' + rejection.data.message + '"';
             }

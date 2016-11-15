@@ -14,7 +14,7 @@
       restrict: 'EA',
       template: '<pre style="display: none;" id="contexteDifyz">{{vm.refreshContextView()}}</pre>',
       scope: {
-        userInfo : '@'
+        userInfo : '='
       },
       controller: refreshContextViewController,
       controllerAs: 'vm',
@@ -42,12 +42,11 @@
      */
     function refreshContextView(){
 
-      //var u = User.getUser();
       var histoUserData = logData.getUserHistoryLog();
       var histoTechData = logData.getTechHistoryLog();
       var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
-      if (vm.userInfo && vm.userInfo.login) {
+      if (vm.userInfo && vm.userInfo.isLogged) {
         rapport += 'Utilisateur actuellement identifié :\n\n';
         rapport += '* login: ' + vm.userInfo.login + '\n';
       } else {
@@ -67,6 +66,7 @@
           rapport += '* ' + value.date + ' - ' + value.msg + '\n';
         });
       }
+
       return rapport;
     }
   }
