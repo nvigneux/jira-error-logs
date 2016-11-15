@@ -32,7 +32,7 @@
         return config;
       },
 
-      'requestCapture': function(rejection) {
+      'requestError': function(rejection) {
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -87,7 +87,7 @@
         return response;
       },
 
-      'responseCapture': function(rejection) {
+      'responseError': function(rejection) {
         // Add failed API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
