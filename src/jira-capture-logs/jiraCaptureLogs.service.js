@@ -4,11 +4,12 @@
   /**
    * @desc services used to set/get log data in array
    */
-  angular
-    .module('jiraErrorLogs.service')
-    .factory('logData', logData);
 
-  function logData(){
+  angular
+    .module('jiraCaptureLogs.service')
+    .factory('jiraCaptureLogs', jiraCaptureLogs);
+
+  function jiraCaptureLogs(){
 
     var historizedUserData = [], // user actions
         historizedTechData = []; // technical actions (API calls and responses)
@@ -25,7 +26,7 @@
     /////////////////////////
 
     /**
-     * Register a user action.
+     * @desc Register a user action.
      * @param data user action.
      */
     function addUserHistoryLog(data){
@@ -36,7 +37,7 @@
     }
 
     /**
-     * get user action.
+     * @desc get user action.
      */
     function getUserHistoryLog(){
       return historizedUserData;
@@ -45,7 +46,7 @@
     /////////////////////////
 
     /**
-     * Register a technical action (API call and responses).
+     * @desc Register a technical action (API call and responses).
      * @param data technical action.
      */
     function addTechHistoryLog(data){
@@ -58,7 +59,7 @@
     }
 
     /**
-     * get tech action.
+     * @desc get tech action.
      */
     function getTechHistoryLog(){
       return historizedTechData;

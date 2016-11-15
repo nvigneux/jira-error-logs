@@ -1,2 +1,2 @@
-# jira-error-logs
+# jira-capture-logs
 

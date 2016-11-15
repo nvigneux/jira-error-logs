@@ -39,10 +39,10 @@ var lintFiles = [
 gulp.task('build', function() {
   gulp.src(sourceFiles)
     .pipe(plumber())
-    .pipe(concat('jira-error-logs.js'))
+    .pipe(concat('jira-capture-logs.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(uglify())
-    .pipe(rename('jira-error-logs.min.js'))
+    .pipe(rename('jira-capture-logs.min.js'))
     .pipe(gulp.dest('./dist'));
 });
 

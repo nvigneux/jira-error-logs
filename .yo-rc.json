@@ -6,13 +6,13 @@
         "email": "nicolas.vigneux@epitech.eu"
       },
       "libraryName": {
-        "original": "jira-error-logs",
-        "camelized": "jiraErrorLogs",
-        "dasherized": "jira-error-logs",
-        "slugified": "jira-error-logs",
+        "original": "jira-capture-logs",
+        "camelized": "jiraCaptureLogs",
+        "dasherized": "jira-capture-logs",
+        "slugified": "jira-capture-logs",
         "parts": [
           "jira",
-          "error",
+          "capture",
           "logs"
         ]
       },
@@ -22,9 +22,9 @@
       "includeAngularModuleResource": false,
       "includeAngularModuleCookies": false,
       "includeAngularModuleSanitize": false,
-      "librarySrcDirectory": "src/jira-error-logs",
-      "libraryUnitTestDirectory": "test/unit/jira-error-logs",
-      "libraryUnitE2eDirectory": "test/e2e/jira-error-logs"
+      "librarySrcDirectory": "src/jira-capture-logs",
+      "libraryUnitTestDirectory": "test/unit/jira-capture-logs",
+      "libraryUnitE2eDirectory": "test/e2e/jira-capture-logs"
     }
   }
 }

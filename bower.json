@@ -1,5 +1,5 @@
 {
-  "name": "jira-error-logs",
+  "name": "jira-capture-logs",
   "version": "0.1.0",
   "authors": [
     {
@@ -7,7 +7,7 @@
       "email": "nicolas.vigneux@epitech.eu"
     }
   ],
-  "main": ["dist/jira-error-logs.js"],
+  "main": ["dist/jira-capture-logs.js"],
   "ignore": [
     "src",
     "test",

@@ -3,16 +3,18 @@
 
   /**
    * @desc user context directive used to show log info
-   * @example <div user-context></div>
+   * @example <div jira-capture-logs user-info="user"></div>
    */
   angular
-    .module('jiraErrorLogs.directive')
-    .directive('userContext', userContext);
+    .module('jiraCaptureLogs.directive')
+    .directive('jiraCaptureLogs', jiraCaptureLogs);
 
-  function userContext(){
+  function jiraCaptureLogs(){
     var directive = {
       restrict: 'EA',
-      template: '<pre style="display: none;" id="contexteDifyz">{{vm.refreshContextView()}}</pre>',
+      template: '<pre style="display: none;" id="{{vm.jiraCaptureId}}">' +
+      '{{vm.refreshContextView()}}' +
+      '</pre>',
       scope: {
         userInfo : '='
       },
@@ -24,33 +26,39 @@
     return directive;
   }
 
-  refreshContextViewController.$inject = ['logData', 'jiraErrorLogsSettings'];
+  refreshContextViewController.$inject = ['jiraCaptureLogs', 'jiraCaptureLogsSettings'];
 
-  function refreshContextViewController(logData, jiraErrorLogsSettings){
+  function refreshContextViewController(jiraCaptureLogs, jiraCaptureLogsSettings){
     var vm = this;
     var appVersion;
-    vm.refreshContextView = refreshContextView;
 
-    jiraErrorLogsSettings.appVersion().then(
-        function (response) {
-          appVersion = response;
-        }
-    );
+    vm.refreshContextView = refreshContextView;
+    vm.jiraCaptureId = jiraCaptureLogsSettings.jiraCaptureId;
+
     /**
-     * Retrivaluee context, historized user actions and API calls, then format this data for use by JiraCapture.
+     * @desc set app version
+     */
+    jiraCaptureLogsSettings.appVersion()
+      .then(function (response) {
+        appVersion = response;
+      });
+
+    /**
+     * @desc Retrieve value context, historized user actions and API calls,
+     * then format this data for use by JiraCapture.
      * @returns {String} formatted data for use by JiraCapture.
      */
     function refreshContextView(){
 
-      var histoUserData = logData.getUserHistoryLog();
-      var histoTechData = logData.getTechHistoryLog();
+      var histoUserData = jiraCaptureLogs.getUserHistoryLog();
+      var histoTechData = jiraCaptureLogs.getTechHistoryLog();
       var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
       if (vm.userInfo && vm.userInfo.isLogged) {
         rapport += 'Utilisateur actuellement identifié :\n\n';
         rapport += '* login: ' + vm.userInfo.login + '\n';
       } else {
-        rapport += 'Utilisateur actuellement non identifié.\n'
+        rapport += 'Utilisateur actuellement non identifié.\n';
       }
 
       if (histoUserData && histoUserData.length > 0) {

@@ -13,26 +13,26 @@ describe('', function() {
   beforeEach(function() {
 
   // Get module
-  module = angular.module('jiraErrorLogs');
+  module = angular.module('jiraCaptureLogs');
   dependencies = module.requires;
   });
 
   it('should load config module', function() {
-    expect(hasModule('jiraErrorLogs.config')).to.be.ok;
+    expect(hasModule('jiraCaptureLogs.config')).to.be.ok;
   });
 
-  
 
-  
+
+
   it('should load directives module', function() {
-    expect(hasModule('jiraErrorLogs.directives')).to.be.ok;
+    expect(hasModule('jiraCaptureLogs.directives')).to.be.ok;
   });
-  
 
-  
+
+
   it('should load services module', function() {
-    expect(hasModule('jiraErrorLogs.services')).to.be.ok;
+    expect(hasModule('jiraCaptureLogs.services')).to.be.ok;
   });
-  
+
 
 });
