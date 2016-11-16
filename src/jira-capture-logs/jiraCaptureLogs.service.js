@@ -9,7 +9,9 @@
     .module('jiraCaptureLogs.service')
     .factory('jiraCaptureLogs', jiraCaptureLogs);
 
-  function jiraCaptureLogs(){
+  jiraCaptureLogs.$inject = ['$injector'];
+
+  function jiraCaptureLogs($injector){
 
     var historizedUserData = [], // user actions
         historizedTechData = []; // technical actions (API calls and responses)
@@ -30,10 +32,17 @@
      * @param data user action.
      */
     function addUserHistoryLog(data){
-      historizedUserData.push({date: new Date(), msg: data});
-      if (historizedUserData.length > 5) {
-        historizedUserData.shift();
-      }
+      // $injector.invoke - fix for circular dependency error
+      // $injector is used to retrieve object instances as defined by provider
+      $injector.invoke(function(jiraCaptureLogsSettings) {
+
+        var userLogsLength = jiraCaptureLogsSettings.userLogsLength ? jiraCaptureLogsSettings.userLogsLength : 5;
+
+        historizedUserData.push({date: new Date(), msg: data});
+        if (historizedUserData.length > userLogsLength) {
+          historizedUserData.shift();
+        }
+      });
     }
 
     /**
@@ -50,12 +59,19 @@
      * @param data technical action.
      */
     function addTechHistoryLog(data){
-      var dateNow = new Date();
-      var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
-      historizedTechData.push({date: now, msg: data});
-      if (historizedTechData.length > 10) {
-        historizedTechData.shift();
-      }
+      // $injector.invoke - fix for circular dependency error
+      // $injector is used to retrieve object instances as defined by provider
+      $injector.invoke(function(jiraCaptureLogsSettings) {
+
+        var techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : 10;
+        var dateNow = new Date();
+        var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
+
+        historizedTechData.push({date: now, msg: data});
+        if (historizedTechData.length > techLogsLength) {
+          historizedTechData.shift();
+        }
+      });
     }
 
     /**

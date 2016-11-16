@@ -138,6 +138,7 @@
     var service = {
 
       'request': function(config) {
+        // $injector.invoke - fix for circular dependency error
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -159,6 +160,7 @@
       },
 
       'requestError': function(rejection) {
+        // $injector.invoke - fix for circular dependency error
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -188,6 +190,7 @@
         // Add API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
+        // $injector.invoke - fix for circular dependency error
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -217,6 +220,7 @@
         // Add failed API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
+        // $injector.invoke - fix for circular dependency error
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -256,7 +260,7 @@
   'use strict';
 
   /**
-   * @desc config api provider
+   * @desc config library provider
    */
 
   angular
@@ -267,6 +271,8 @@
     var appVersion = '';
     var jiraCaptureId = '';
     var urlAppVersion = '';
+    var techLogsLength,
+        userLogsLength;
     var apiName = [];
 
     /**
@@ -286,11 +292,27 @@
     };
 
     /**
-     * @desc set id to allow jira to get the div with the logs
+     * @desc set id to allow Jira to get the div with the logs
      * @param {string} value
      */
     this.setId = function (value) {
       jiraCaptureId = value;
+    };
+
+    /**
+     * @desc set the length of tech logs save by the directive
+     * @param {int} value
+     */
+    this.setTechLogsLength = function (value) {
+      techLogsLength = value;
+    };
+
+    /**
+     * @desc set the length of data logs save by the directive
+     * @param {int} value
+     */
+    this.setUserLogsLength = function (value) {
+      userLogsLength = value;
     };
 
     this.$get = ['$http', function ($http) {
@@ -309,7 +331,9 @@
           }
         },
         apiName: apiName,
-        jiraCaptureId: jiraCaptureId
+        jiraCaptureId: jiraCaptureId,
+        techLogsLength: techLogsLength,
+        userLogsLength: userLogsLength
       };
 
     }];
@@ -327,7 +351,9 @@
     .module('jiraCaptureLogs.service')
     .factory('jiraCaptureLogs', jiraCaptureLogs);
 
-  function jiraCaptureLogs(){
+  jiraCaptureLogs.$inject = ['$injector']
+
+  function jiraCaptureLogs($injector){
 
     var historizedUserData = [], // user actions
         historizedTechData = []; // technical actions (API calls and responses)
@@ -368,12 +394,17 @@
      * @param data technical action.
      */
     function addTechHistoryLog(data){
-      var dateNow = new Date();
-      var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
-      historizedTechData.push({date: now, msg: data});
-      if (historizedTechData.length > 10) {
-        historizedTechData.shift();
-      }
+      $injector.invoke(function(jiraCaptureLogsSettings) {
+        // $injector.invoke - fix for circular dependency error
+        var techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : 10;
+        var dateNow = new Date();
+        var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
+        historizedTechData.push({date: now, msg: data});
+        if (historizedTechData.length > techLogsLength) {
+          historizedTechData.shift();
+        }
+        debugger;
+      });
     }
 
     /**

@@ -12,6 +12,8 @@
     var service = {
 
       'request': function(config) {
+        // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -33,6 +35,8 @@
       },
 
       'requestError': function(rejection) {
+        // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -62,6 +66,8 @@
         // Add API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
+        // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -91,6 +97,8 @@
         // Add failed API calls to historized user actions. Note that we filter calls to templates
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
+        // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {

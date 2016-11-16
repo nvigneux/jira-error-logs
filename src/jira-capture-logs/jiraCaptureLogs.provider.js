@@ -2,7 +2,7 @@
   'use strict';
 
   /**
-   * @desc config api provider
+   * @desc config library provider
    */
 
   angular
@@ -13,6 +13,8 @@
     var appVersion = '';
     var jiraCaptureId = '';
     var urlAppVersion = '';
+    var techLogsLength,
+        userLogsLength;
     var apiName = [];
 
     /**
@@ -32,11 +34,27 @@
     };
 
     /**
-     * @desc set id to allow jira to get the div with the logs
+     * @desc set id to allow Jira to get the div with the logs
      * @param {string} value
      */
     this.setId = function (value) {
       jiraCaptureId = value;
+    };
+
+    /**
+     * @desc set the length of tech logs save by the directive
+     * @param {int} value
+     */
+    this.setTechLogsLength = function (value) {
+      techLogsLength = value;
+    };
+
+    /**
+     * @desc set the length of data logs save by the directive
+     * @param {int} value
+     */
+    this.setUserLogsLength = function (value) {
+      userLogsLength = value;
     };
 
     this.$get = ['$http', function ($http) {
@@ -55,7 +73,9 @@
           }
         },
         apiName: apiName,
-        jiraCaptureId: jiraCaptureId
+        jiraCaptureId: jiraCaptureId,
+        techLogsLength: techLogsLength,
+        userLogsLength: userLogsLength
       };
 
     }];
