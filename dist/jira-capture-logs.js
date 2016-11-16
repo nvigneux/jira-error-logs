@@ -59,7 +59,8 @@
       '{{vm.refreshContextView()}}' +
       '</pre>',
       scope: {
-        userInfo : '='
+        userIsLogged : '=',
+        userLogin : '='
       },
       controller: refreshContextViewController,
       controllerAs: 'vm',
@@ -97,9 +98,10 @@
       var histoTechData = jiraCaptureLogs.getTechHistoryLog();
       var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
-      if (vm.userInfo && vm.userInfo.isLogged) {
+      if (vm.userIsLogged) {
+        var login = vm.userLogin ? vm.userLogin : 'login non renseigné';
         rapport += 'Utilisateur actuellement identifié :\n\n';
-        rapport += '* login: ' + vm.userInfo.login + '\n';
+        rapport += '* login: ' + login + '\n';
       } else {
         rapport += 'Utilisateur actuellement non identifié.\n';
       }
@@ -139,6 +141,7 @@
 
       'request': function(config) {
         // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -161,6 +164,7 @@
 
       'requestError': function(rejection) {
         // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -191,6 +195,7 @@
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
         // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -221,6 +226,7 @@
         // and BO version API (filter by url), and calls to multipart data (filter by header).
 
         // $injector.invoke - fix for circular dependency error
+        // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
           var result = [];
           for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
@@ -351,7 +357,7 @@
     .module('jiraCaptureLogs.service')
     .factory('jiraCaptureLogs', jiraCaptureLogs);
 
-  jiraCaptureLogs.$inject = ['$injector']
+  jiraCaptureLogs.$inject = ['$injector'];
 
   function jiraCaptureLogs($injector){
 
@@ -374,10 +380,17 @@
      * @param data user action.
      */
     function addUserHistoryLog(data){
-      historizedUserData.push({date: new Date(), msg: data});
-      if (historizedUserData.length > 5) {
-        historizedUserData.shift();
-      }
+      // $injector.invoke - fix for circular dependency error
+      // $injector is used to retrieve object instances as defined by provider
+      $injector.invoke(function(jiraCaptureLogsSettings) {
+
+        var userLogsLength = jiraCaptureLogsSettings.userLogsLength ? jiraCaptureLogsSettings.userLogsLength : 5;
+
+        historizedUserData.push({date: new Date(), msg: data});
+        if (historizedUserData.length > userLogsLength) {
+          historizedUserData.shift();
+        }
+      });
     }
 
     /**
@@ -394,16 +407,18 @@
      * @param data technical action.
      */
     function addTechHistoryLog(data){
+      // $injector.invoke - fix for circular dependency error
+      // $injector is used to retrieve object instances as defined by provider
       $injector.invoke(function(jiraCaptureLogsSettings) {
-        // $injector.invoke - fix for circular dependency error
+
         var techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : 10;
         var dateNow = new Date();
         var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
+
         historizedTechData.push({date: now, msg: data});
         if (historizedTechData.length > techLogsLength) {
           historizedTechData.shift();
         }
-        debugger;
       });
     }
 

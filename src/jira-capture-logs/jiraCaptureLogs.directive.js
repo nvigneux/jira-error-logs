@@ -16,7 +16,8 @@
       '{{vm.refreshContextView()}}' +
       '</pre>',
       scope: {
-        userInfo : '='
+        userIsLogged : '=',
+        userLogin : '='
       },
       controller: refreshContextViewController,
       controllerAs: 'vm',
@@ -54,9 +55,10 @@
       var histoTechData = jiraCaptureLogs.getTechHistoryLog();
       var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
 
-      if (vm.userInfo && vm.userInfo.isLogged) {
+      if (vm.userIsLogged) {
+        var login = vm.userLogin ? vm.userLogin : 'Login non renseigné';
         rapport += 'Utilisateur actuellement identifié :\n\n';
-        rapport += '* login: ' + vm.userInfo.login + '\n';
+        rapport += '* login: ' + login + '\n';
       } else {
         rapport += 'Utilisateur actuellement non identifié.\n';
       }
