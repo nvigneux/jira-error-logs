@@ -45,32 +45,32 @@ angular.module('app')
     .config(function(jiraCaptureLogsSettingsProvider) {
     	/**
         * @desc Versionning of the app.
-        * @params {string} url/version
-        * @params {boolean} http call - optional
+        * @param {string} url/version
+        * @param {boolean} http call - optional
         */
         jiraCaptureLogsSettingsProvider.setUrlAppVersion('api/info', true);
 
         /**
         * @desc ID to allow Jira to get the div with the logs, configure in Jira.
-        * @params {string}
+        * @param {string}
         */
         jiraCaptureLogsSettingsProvider.setId('jiraCaptureID');
         
         /**
         * @desc Url of the API
-        * @params {array}
+        * @param {array}
         */
         jiraCaptureLogsSettingsProvider.setApiName(['api-sp', 'api-edit']);
         
         /**
         * @desc Length of the array tech logs
-        * @params {int} - 10
+        * @param {int} - 10
         */
         jiraCaptureLogsSettingsProvider.setTechLogsLength(20);
         
         /**
         * @desc Length of the array user logs 
-        * @params {int} - 5
+        * @param {int} - 5
         */
         jiraCaptureLogsSettingsProvider.setUserLogsLength(10);
     });
