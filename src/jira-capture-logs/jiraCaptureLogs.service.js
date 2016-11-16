@@ -36,7 +36,7 @@
       // $injector.invoke - fix for circular dependency error
       // $injector is used to retrieve object instances as defined by provider
       $injector.invoke(function(jiraCaptureLogsSettings) {
-        userLogsLength = jiraCaptureLogsSettings.userLogsLength ? jiraCaptureLogsSettings.userLogsLength : userLogsLength;
+        userLogsLength = angular.isNumber(jiraCaptureLogsSettings.userLogsLength) ? jiraCaptureLogsSettings.userLogsLength : userLogsLength;
       });
 
       historizedUserData.push({date: new Date(), msg: data});
@@ -65,7 +65,7 @@
       // $injector.invoke - fix for circular dependency error
       // $injector is used to retrieve object instances as defined by provider
       $injector.invoke(function(jiraCaptureLogsSettings) {
-        techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : techLogsLength;
+        techLogsLength = angular.isNumber(jiraCaptureLogsSettings.techLogsLength) ? jiraCaptureLogsSettings.techLogsLength : techLogsLength;
       });
 
       historizedTechData.push({date: now, msg: data});

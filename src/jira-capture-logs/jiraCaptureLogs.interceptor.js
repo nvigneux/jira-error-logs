@@ -15,20 +15,24 @@
         // $injector.invoke - fix for circular dependency error
         // $injector is used to retrieve object instances as defined by provider
         $injector.invoke(function(jiraCaptureLogsSettings) {
-          var result = [];
-          for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
+          if(jiraCaptureLogsSettings.apiName && jiraCaptureLogsSettings.apiName.length) {
+            var result = [];
+            for (var i = 0; i < jiraCaptureLogsSettings.apiName.length; i++) {
 
-            if (config && config.url &&
+              if (config && config.url &&
                 config.url.indexOf(jiraCaptureLogsSettings.apiName[i]) === 0 &&
                 config.url.indexOf('/info') <= 0) {
 
-              result.push(config.url);
+                result.push(config.url);
+              }
             }
-          }
 
-          if(result.length){
-            var msg = 'appel API : ' + config.method + ' ' + config.url;
-            jiraCaptureLogs.addTechHistoryLog(msg);
+            if (result.length) {
+              var msg = 'appel API : ' + config.method + ' ' + config.url;
+              jiraCaptureLogs.addTechHistoryLog(msg);
+            }
+          }else{
+            console.error('Jira Capture Logs - API Name is not defined');
           }
         });
         return config;

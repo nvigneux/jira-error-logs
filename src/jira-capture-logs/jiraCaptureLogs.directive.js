@@ -34,15 +34,26 @@
     var appVersion;
 
     vm.refreshContextView = refreshContextView;
-    vm.jiraCaptureId = jiraCaptureLogsSettings.jiraCaptureId;
+    vm.jiraCaptureId = jiraCaptureLogsSettings.jiraCaptureId ? jiraCaptureLogsSettings.jiraCaptureId : jiraCaptureIdConfig();
 
-    /**
-     * @desc set app version
-     */
-    jiraCaptureLogsSettings.appVersion()
-      .then(function (response) {
-        appVersion = response;
-      });
+    function jiraCaptureIdConfig(){
+      console.error('Jira Capture Logs - ID is not defined');
+      return 'jiraCaptureId';
+    }
+
+    //set app version
+    if(jiraCaptureLogsSettings.urlAppVersion) {
+      getAppVersion();
+    }else{
+      console.error('Jira Capture Logs - API Version is not defined');
+    }
+
+    function getAppVersion(){
+      jiraCaptureLogsSettings.appVersion()
+        .then(function (response) {
+          appVersion = response;
+        });
+    }
 
     /**
      * @desc Retrieve value context, historized user actions and API calls,
@@ -53,7 +64,7 @@
 
       var histoUserData = jiraCaptureLogs.getUserHistoryLog();
       var histoTechData = jiraCaptureLogs.getTechHistoryLog();
-      var rapport = 'Version API SP: ' + (appVersion ? appVersion : '') + '\n\n';
+      var rapport = (appVersion ? 'Version API SP: ' + appVersion : '') + '\n\n';
 
       if (vm.userIsLogged) {
         var login = vm.userLogin ? vm.userLogin : 'Login non renseigné';

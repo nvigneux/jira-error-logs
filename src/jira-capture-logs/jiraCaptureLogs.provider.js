@@ -85,6 +85,7 @@
             return getAppVersion(httpAppversion);
           }
         },
+        urlAppVersion:urlAppVersion,
         apiName: apiName,
         jiraCaptureId: jiraCaptureId,
         techLogsLength: techLogsLength,
