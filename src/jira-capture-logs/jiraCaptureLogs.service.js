@@ -32,17 +32,17 @@
      * @param data user action.
      */
     function addUserHistoryLog(data){
+      var userLogsLength = 5;
       // $injector.invoke - fix for circular dependency error
       // $injector is used to retrieve object instances as defined by provider
       $injector.invoke(function(jiraCaptureLogsSettings) {
-
-        var userLogsLength = jiraCaptureLogsSettings.userLogsLength ? jiraCaptureLogsSettings.userLogsLength : 5;
-
-        historizedUserData.push({date: new Date(), msg: data});
-        if (historizedUserData.length > userLogsLength) {
-          historizedUserData.shift();
-        }
+        userLogsLength = jiraCaptureLogsSettings.userLogsLength ? jiraCaptureLogsSettings.userLogsLength : userLogsLength;
       });
+
+      historizedUserData.push({date: new Date(), msg: data});
+      if (historizedUserData.length > userLogsLength) {
+        historizedUserData.shift();
+      }
     }
 
     /**
@@ -59,19 +59,19 @@
      * @param data technical action.
      */
     function addTechHistoryLog(data){
+      var dateNow = new Date();
+      var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
+      var techLogsLength = 10;
       // $injector.invoke - fix for circular dependency error
       // $injector is used to retrieve object instances as defined by provider
       $injector.invoke(function(jiraCaptureLogsSettings) {
-
-        var techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : 10;
-        var dateNow = new Date();
-        var now = dateNow.toLocaleString() + '.' + dateNow.getMilliseconds();
-
-        historizedTechData.push({date: now, msg: data});
-        if (historizedTechData.length > techLogsLength) {
-          historizedTechData.shift();
-        }
+        techLogsLength = jiraCaptureLogsSettings.techLogsLength ? jiraCaptureLogsSettings.techLogsLength : techLogsLength;
       });
+
+      historizedTechData.push({date: now, msg: data});
+      if (historizedTechData.length > techLogsLength) {
+        historizedTechData.shift();
+      }
     }
 
     /**
