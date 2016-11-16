@@ -276,7 +276,8 @@
   function jiraCaptureLogsSettingsProvider() {
     var appVersion = '';
     var jiraCaptureId = '';
-    var urlAppVersion = '';
+    var urlAppVersion = '',
+        httpAppversion = false;
     var techLogsLength,
         userLogsLength;
     var apiName = [];
@@ -284,9 +285,11 @@
     /**
      * @desc set url of the ws to get app version in the http call
      * @param {string} value
+     * @param {boolean} http
      */
-    this.setUrlAppVersion = function (value) {
+    this.setUrlAppVersion = function (value, http) {
       urlAppVersion = value;
+      httpAppversion = http;
     };
 
     /**
@@ -321,7 +324,7 @@
       userLogsLength = value;
     };
 
-    this.$get = ['$http', function ($http) {
+    this.$get = ['$http', '$q', function ($http, $q) {
 
       function onLoadAppVersion(response){
         if(response && response.data) {
@@ -330,10 +333,20 @@
         }
       }
 
+      function getAppVersion(http){
+        if(http) {
+          return $http.get(urlAppVersion).then(onLoadAppVersion);
+        }else{
+          var defer = $q.defer();
+          defer.resolve(urlAppVersion);
+          return defer.promise;
+        }
+      }
+
       return {
         appVersion: function () {
           if(urlAppVersion) {
-            return $http.get(urlAppVersion).then(onLoadAppVersion);
+            return getAppVersion(httpAppversion);
           }
         },
         apiName: apiName,
